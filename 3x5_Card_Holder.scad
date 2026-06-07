@@ -6,9 +6,10 @@ layerHeight = 0.2;
 
 mm = 25.4;
 
-cardX = 3.25 * mm;
-cardY = 2.00 * mm;  
-cardZ = 0.05 * mm;
+// Measured dimensions of a card, in mm:
+cardX = 82.6; // 3.25 * mm;
+cardY = 50.1; //2.00 * mm;  
+cardZ = 1.4; //0.05 * mm;
 echo(str("Card = ", cardX, " x ", cardY, " x ", cardZ));
 
 module itemModule()
