@@ -66,7 +66,7 @@ module jig(angle, edgeClearance)
 		}
 
 		// Card slot:
-		#rotate([0,a2,0]) tcu([-200+cardSlotX, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
+		rotate([0,a2,0]) tcu([-200+cardSlotX, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
 
 		// Clearance above the sharpened edge:
 		rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
