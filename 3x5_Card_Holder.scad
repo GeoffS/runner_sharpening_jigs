@@ -12,9 +12,21 @@ cardY = 50.1; //2.00 * mm;
 cardZ = 1.4; //0.05 * mm;
 echo(str("Card = ", cardX, " x ", cardY, " x ", cardZ));
 
+sideX = cardX + 2*10;
+
+nutThThickness = 3;
+nutRecessX = 3;
+
+pivotScrewMinLength = sideX + nutThThickness - nutRecessX;
+echo(str("pivotScrewMinLength = ", pivotScrewMinLength, " mm"));
+echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
+
 module itemModule()
 {
-	
+	difference()
+    {
+
+    }
 }
 
 module clip(d=0)
