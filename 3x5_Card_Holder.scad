@@ -52,7 +52,6 @@ module jig(angle)
 
 			difference()
 			{
-				// rotate([-90,0,0]) tcy([0,0,-cardSideY/2], d=cardSideZ*2, h=cardSideY);
 				rotate([-90,0,0]) translate([0,0,-cardSideY/2]) simpleChamferedCylinderDoubleEnded(d=cardSideZ*2, h=cardSideY, cz=endCZ);
 				tcu([-200, -200, -400], 400);
 			}
@@ -74,7 +73,6 @@ module jig(angle)
 
 module cardSide()
 {
-	// tcu([0, -cardSideY/2, 0], [cardSideX, cardSideY, cardSideZ]);
 	hull()
 	{
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([0,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
@@ -84,7 +82,6 @@ module cardSide()
 
 module offSide()
 {
-	// tcu([-offSideX, -offSideY/2, 0], [offSideX, offSideY, offSideZ]);
 	hull()
 	{
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([0,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
@@ -101,7 +98,8 @@ module clip(d=0)
 if(developmentRender)
 {
 	display() itemModule();
-	// displayGhost() runnerGhost(width=0.25*mm, angle=90);
+	// displayGhost() runnerGhost(width=3/8*mm, angle=90);
+	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
 	displayGhost() runnerGhost(width=3/16*mm, angle=90);
 }
 else
