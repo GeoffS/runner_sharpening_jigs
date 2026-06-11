@@ -63,6 +63,12 @@ module jig(angle)
 		edgeClearance = 2;
 		rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
 		tcu([-edgeClearance/2, -200, -100], [edgeClearance, 400, 100]);
+		doubleY() hull()
+		{
+			translate([0,cardSideY/2-edgeClearance/2-endCZ,0]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
+			translate([0,cardSideY/2-edgeClearance/2-endCZ,-100]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
+		}
+		
 	}
 }
 
@@ -88,13 +94,15 @@ module offSide()
 
 module clip(d=0)
 {
-	//tc([-200, -400-d, -10], 400);
+	// tc([-200, -400-d, -10], 400);
+	// tcu([0, -200, -200], 400);
 }
 
 if(developmentRender)
 {
 	display() itemModule();
-	displayGhost() runnerGhost(width=0.25*mm, angle=90);;
+	// displayGhost() runnerGhost(width=0.25*mm, angle=90);
+	displayGhost() runnerGhost(width=3/16*mm, angle=90);
 }
 else
 {
