@@ -29,7 +29,9 @@ cardSideZ = cardZ + 8;
 
 offSideX = 25;
 offSideY = cardY + 2*10;
-offSideZ = cardZ + 8;
+offSideZ = cardSideZ;
+
+endCZ = 2;
 
 module itemModule()
 {
@@ -50,7 +52,8 @@ module jig(angle)
 
 			difference()
 			{
-				rotate([-90,0,0]) tcy([0,0,-cardSideY/2], d=cardSideZ*2, h=cardSideY);
+				// rotate([-90,0,0]) tcy([0,0,-cardSideY/2], d=cardSideZ*2, h=cardSideY);
+				rotate([-90,0,0]) translate([0,0,-cardSideY/2]) simpleChamferedCylinderDoubleEnded(d=cardSideZ*2, h=cardSideY, cz=endCZ);
 				tcu([-200, -200, -400], 400);
 			}
 			
@@ -65,12 +68,23 @@ module jig(angle)
 
 module cardSide()
 {
-	tcu([0, -cardSideY/2, 0], [cardSideX, cardSideY, cardSideZ]);
+	// tcu([0, -cardSideY/2, 0], [cardSideX, cardSideY, cardSideZ]);
+	hull()
+	{
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([0,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([cardSideX-offSideZ/2,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+	}
 }
 
 module offSide()
 {
-	tcu([-offSideX, -offSideY/2, 0], [offSideX, offSideY, offSideZ]);}
+	// tcu([-offSideX, -offSideY/2, 0], [offSideX, offSideY, offSideZ]);
+	hull()
+	{
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([0,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([-offSideX+offSideZ/2,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+	}
+}
 
 module clip(d=0)
 {
