@@ -27,7 +27,7 @@ cardSideX = cardX + 2*10;
 cardSideY = cardY + 2*10;
 cardSideZ = cardZ + 8;
 
-offSideX = 25;
+offSideX = 20;
 offSideY = cardY + 2*10;
 offSideZ = cardSideZ;
 
