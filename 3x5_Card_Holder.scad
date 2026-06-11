@@ -45,11 +45,14 @@ module jig(angle, edgeClearance)
 
 	difference()
 	{
+		// The main body of the card holder:
 		union()
 		{
+			// Sides:
 			rotate([0,a2,0]) cardSide();
 			rotate([0,-a2,0]) offSide();
 
+			// Rounded top:
 			difference()
 			{
 				rotate([-90,0,0]) translate([0,0,-cardSideY/2]) simpleChamferedCylinderDoubleEnded(d=cardSideZ*2, h=cardSideY, cz=endCZ);
