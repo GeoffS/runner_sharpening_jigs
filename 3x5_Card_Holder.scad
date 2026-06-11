@@ -27,6 +27,10 @@ cardSideX = cardX + 2*10;
 cardSideY = cardY + 2*10;
 cardSideZ = cardZ + 8;
 
+offSideX = 25;
+offSideY = cardY + 2*10;
+offSideZ = cardZ + 8;
+
 module itemModule()
 {
 	jig(90);
@@ -66,7 +70,7 @@ module cardSide()
 
 module offSide()
 {
-	tcu([-cardSideX, -cardSideY/2, 0], [cardSideX, cardSideY, cardSideZ]);}
+	tcu([-offSideX, -offSideY/2, 0], [offSideX, offSideY, offSideZ]);}
 
 module clip(d=0)
 {
@@ -76,8 +80,21 @@ module clip(d=0)
 if(developmentRender)
 {
 	display() itemModule();
+	displayGhost() runnerGhost(width=0.25*mm, angle=90);;
 }
 else
 {
 	itemModule();
+}
+
+module runnerGhost(width, angle)
+{
+	y = 160;
+	z = 40;
+	translate([0,0,-0.05]) difference()
+	{
+		tcu([-width/2, -y/2, -z], [width, y, z]);
+
+		doubleX() rotate([0, angle/2, 0]) tcu([-40, -200, 0], 400);
+	}
 }
