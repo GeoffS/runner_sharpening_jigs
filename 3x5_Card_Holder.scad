@@ -35,10 +35,10 @@ endCZ = 2;
 
 module itemModule()
 {
-	jig(90);
+	jig(angle=90, edgeClearance=1.5);
 }
 
-module jig(angle)
+module jig(angle, edgeClearance)
 {
 	echo(str("jig( ", angle, ")"));
 	a2 = angle/2;
@@ -59,7 +59,6 @@ module jig(angle)
 		}
 
 		// Clearance above the sharpened edge:
-		edgeClearance = 2;
 		rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
 		tcu([-edgeClearance/2, -200, -100], [edgeClearance, 400, 100]);
 		doubleY() hull()
