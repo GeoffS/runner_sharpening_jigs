@@ -23,7 +23,7 @@ pivotScrewMinLength = sideX + nutThThickness - nutRecessX;
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength, " mm"));
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
 
-cardSideX = cardX + 2*10;
+cardSideX = 20; //cardX + 2*10;
 cardSideY = cardY + 2*10;
 cardSideZ = cardZ + 10;
 
