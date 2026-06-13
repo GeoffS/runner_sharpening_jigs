@@ -37,6 +37,14 @@ cardSlotZ = cardZ + 0.3;
 
 endCZ = 2;
 
+// cardSlotExtension():
+outsideX = cardSideX-offSideZ/2;
+insideX = 12;
+cardSideExtensionIMiddleX = (outsideX + insideX)/2;
+
+cardSlotExtensionX = -5;
+retentionScrewHoleDia = 3.0;;
+
 module itemModule()
 {
 	jig(angle=90, edgeClearance=1.5);
@@ -73,7 +81,11 @@ module jig(angle, edgeClearance)
 		}
 
 		// Card slot:
-		rotate([0,a2,0]) tcu([-5, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
+		rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
+
+		// Card retention-screw holes:
+		cardSlotRetneentionScrewHole(a2, y=0);
+		doubleY() cardSlotRetneentionScrewHole(a2, y=cardSlotY/2 - 10);
 
 		// Crud clearance above the sharpened edge:
 		rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
@@ -84,6 +96,15 @@ module jig(angle, edgeClearance)
 			translate([0,cardSideY/2-edgeClearance/2-endCZ,-100]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
 		}
 		
+	}
+}
+
+module cardSlotRetneentionScrewHole(a2, y)
+{
+	rotate([0,a2,0]) 
+	{
+		tcy([cardSlotExtensionX/2,y,0], d=retentionScrewHoleDia, h=100);
+		tcy([cardSideExtensionIMiddleX,y,0], d=retentionScrewHoleDia, h=100);
 	}
 }
 
@@ -112,9 +133,7 @@ module cardSideExtension()
 {
 	hull()
 	{
-		outsideX = cardSideX-offSideZ/2;
-		insideX = 12;
-		middleX = (outsideX + insideX)/2;
+		
 		dy = -3;
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([insideX,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([outsideX,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
@@ -122,7 +141,7 @@ module cardSideExtension()
 
 		// MAGIC!!!!!
 		//   ------------------------------------------------------------------------vvvv
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([middleX,dy-1.3,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([cardSideExtensionIMiddleX,dy-1.3,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 	}
 }
 
@@ -139,7 +158,7 @@ module clip(d=0)
 {
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
-	tcu([-200, -400-d, -200], 400);
+	// tcu([-200, -400-d, -200], 400);
 }
 
 if(developmentRender)
