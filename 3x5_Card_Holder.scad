@@ -25,7 +25,7 @@ echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
 
 cardSideX = 20; //cardX + 2*10;
 cardSideY = cardY + 2*10;
-cardSideZ = cardZ + 10;
+cardSideZ = cardZ + 8;
 
 offSideX = 20;
 offSideY = cardY + 2*10;
@@ -53,20 +53,26 @@ module jig(angle, edgeClearance)
 		union()
 		{
 			// Sides:
-			rotate([0,a2,0]) cardSide();
-			rotate([0,-a2,0]) offSide();
-
-			// Rounded top:
-			difference()
+			hull()
 			{
-				rotate([-90,0,0]) translate([0,0,-cardSideY/2]) simpleChamferedCylinderDoubleEnded(d=cardSideZ*2, h=cardSideY, cz=endCZ);
-				tcu([-200, -200, -400], 400);
+				rotate([0,a2,0]) cardSide();
+				roundedTop();
 			}
-			
+
+			hull()
+			{
+				rotate([0,-a2,0]) offSide();
+				mirror([1,0,0]) roundedTop();
+			}	
+			hull()
+			{
+				roundedTop();
+				mirror([1,0,0]) roundedTop();
+			}	
 		}
 
 		// Card slot:
-		#rotate([0,a2,0]) tcu([-6, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
+		#rotate([0,a2,0]) tcu([-5, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
 
 		// Clearance above the sharpened edge:
 		rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
@@ -77,6 +83,18 @@ module jig(angle, edgeClearance)
 			translate([0,cardSideY/2-edgeClearance/2-endCZ,-100]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
 		}
 		
+	}
+}
+
+module roundedTop()
+{
+	d = cardSideZ + 6; //cardSideZ*2;
+
+	translate([1.5,0,1]) difference()
+	{
+		rotate([-90,0,0]) translate([0,0,-cardSideY/2]) simpleChamferedCylinderDoubleEnded(d=d, h=cardSideY, cz=endCZ);
+		tcu([-200, -200, -400], 400);
+		tcu([-400, -200, -200], 400);
 	}
 }
 
