@@ -23,12 +23,12 @@ pivotScrewMinLength = sideX + nutThThickness - nutRecessX;
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength, " mm"));
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
 
-cardSideX = 20; //cardX + 2*10;
-cardSideY = cardY + 2*10;
+cardSideX = 25; //cardX + 2*10;
+cardSideY = cardY + 2*12;
 cardSideZ = cardZ + 8;
 
 offSideX = 20;
-offSideY = cardY + 2*10;
+offSideY = cardSideY;
 offSideZ = cardSideZ;
 
 cardSlotX = cardX - 6;
@@ -58,6 +58,7 @@ module jig(angle, edgeClearance)
 				rotate([0,a2,0]) cardSide();
 				roundedTop();
 			}
+			rotate([0,a2,0]) cardSideExtension();
 
 			hull()
 			{
@@ -72,7 +73,7 @@ module jig(angle, edgeClearance)
 		}
 
 		// Card slot:
-		#rotate([0,a2,0]) tcu([-5, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
+		rotate([0,a2,0]) tcu([-5, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
 
 		// Clearance above the sharpened edge:
 		rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
@@ -107,6 +108,18 @@ module cardSide()
 	}
 }
 
+module cardSideExtension()
+{
+	hull()
+	{
+		dx = 12;
+		dy = -3;
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([dx,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([cardSideX-offSideZ/2,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([cardSideX-offSideZ/2,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+	}
+}
+
 module offSide()
 {
 	hull()
@@ -126,9 +139,9 @@ module clip(d=0)
 if(developmentRender)
 {
 	display() itemModule();
-	displayGhost() runnerGhost(width=3/8*mm, angle=90);
+	// displayGhost() runnerGhost(width=3/8*mm, angle=90);
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
-	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
+	displayGhost() runnerGhost(width=3/16*mm, angle=90);
 }
 else
 {
