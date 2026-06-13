@@ -23,7 +23,7 @@ pivotScrewMinLength = sideX + nutThThickness - nutRecessX;
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength, " mm"));
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
 
-cardSideX = 25; //cardX + 2*10;
+cardSideX = 20; //cardX + 2*10;
 cardSideY = cardY + 2*12;
 cardSideZ = cardZ + 8;
 
@@ -112,11 +112,17 @@ module cardSideExtension()
 {
 	hull()
 	{
-		dx = 12;
+		outsideX = cardSideX-offSideZ/2;
+		insideX = 12;
+		middleX = (outsideX + insideX)/2;
 		dy = -3;
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([dx,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([cardSideX-offSideZ/2,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([cardSideX-offSideZ/2,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([insideX,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([outsideX,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([outsideX,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+
+		// MAGIC!!!!!
+		//   ------------------------------------------------------------------------vvvv
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([middleX,dy-1.3,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 	}
 }
 
@@ -139,9 +145,9 @@ module clip(d=0)
 if(developmentRender)
 {
 	display() itemModule();
-	// displayGhost() runnerGhost(width=3/8*mm, angle=90);
+	displayGhost() runnerGhost(width=3/8*mm, angle=90);
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
-	displayGhost() runnerGhost(width=3/16*mm, angle=90);
+	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
 }
 else
 {
