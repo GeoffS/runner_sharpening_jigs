@@ -25,7 +25,7 @@ echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
 
 cardSideX = cardX + 2*10;
 cardSideY = cardY + 2*10;
-cardSideZ = cardZ + 8;
+cardSideZ = cardZ + 10;
 
 offSideX = 20;
 offSideY = cardY + 2*10;
