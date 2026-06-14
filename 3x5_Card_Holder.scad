@@ -81,7 +81,8 @@ module jig(angle, edgeClearance)
 		}
 
 		// Card slot:
-		rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, 0], [200, cardSlotY, cardSlotZ]);
+		cardSlotExtraZ  = 0.04; // about 1.6 thou inches
+		#rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, -cardSlotExtraZ], [200, cardSlotY, cardSlotZ]);
 
 		// Card retention-screw holes:
 		cardSlotRetneentionScrewHole(a2, y=0);
@@ -158,19 +159,20 @@ module clip(d=0)
 {
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
-	// tcu([-200, -400-d, -200], 400);
+	tcu([-200, -400-d, -200], 400);
 }
 
 if(developmentRender)
 {
 	display() itemModule();
 	displayGhost() runnerGhost(width=3/8*mm, angle=90);
+	displayGhost() cardGhost(angle=90);
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
 	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
 }
 else
 {
-	itemModule();
+	rotate([90,0,0]) itemModule();
 }
 
 module runnerGhost(width, angle)
@@ -183,4 +185,9 @@ module runnerGhost(width, angle)
 
 		doubleX() rotate([0, angle/2, 0]) tcu([-40, -200, 0], 400);
 	}
+}
+
+module cardGhost(angle=90)
+{
+	rotate([0,angle/2,0]) tcu([cardSlotExtensionX, -cardY/2, 0], [cardX, cardY, cardZ]);
 }
