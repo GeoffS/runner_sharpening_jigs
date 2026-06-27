@@ -4,8 +4,6 @@ include <../OpenSCAD_Lib/chamferedCylinders.scad>
 firstLayerHeight = 0.2;
 layerHeight = 0.2;
 
-mm = 25.4;
-
 // Measured dimensions of a card, in mm:
 // cardX = 82.6; // 3.25 * mm;
 // cardY = 50.1; //2.00 * mm;  
