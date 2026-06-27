@@ -81,16 +81,9 @@ module jig(angle, edgeClearance)
 		}
 
 		// Paper slot:
-		// cardSlotExtraZ  = 0.04; // about 1.6 thou inches
-		// rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, -cardSlotExtraZ], [200, cardSlotY, cardSlotZ]);
         rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, -paperSlotExtraZ], [200, cardSlotY, cardSlotZ]);
 
-		// // Card retention-screw holes:
-		// cardSlotRetneentionScrewHole(a2, y=0);
-		// doubleY() cardSlotRetneentionScrewHole(a2, y=cardSlotY/2 - 10);
-
-		// Crud clearance above the sharpened edge:
-		// rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
+		// Clearance on the off-side for debris::
         ec2 = edgeClearance/2;
 		tcu([-ec2, -200, -100], [ec2, 400, 100]);
         clip = edgeClearance/4;
@@ -100,23 +93,18 @@ module jig(angle, edgeClearance)
         echo(str("clipX = ", clipX));
         echo(str("clipZ = ", clipZ));
         translate([0, -200, 0]) rotate([0,-a2,0]) tcu([-clipX+clipOffsetX,0,0], [clipX, 400, clipZ]);
-		// doubleY() hull()
-		// {
-		// 	translate([0,cardSideY/2-edgeClearance/2-endCZ,0]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
-		// 	translate([0,cardSideY/2-edgeClearance/2-endCZ,-100]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
-		// }
 		
 	}
 }
 
-module cardSlotRetneentionScrewHole(a2, y)
-{
-	rotate([0,a2,0]) 
-	{
-		tcy([cardSlotExtensionX/2,y,0], d=retentionScrewHoleDia, h=100);
-		tcy([cardSideExtensionIMiddleX,y,0], d=retentionScrewHoleDia, h=100);
-	}
-}
+// module cardSlotRetneentionScrewHole(a2, y)
+// {
+// 	rotate([0,a2,0]) 
+// 	{
+// 		tcy([cardSlotExtensionX/2,y,0], d=retentionScrewHoleDia, h=100);
+// 		tcy([cardSideExtensionIMiddleX,y,0], d=retentionScrewHoleDia, h=100);
+// 	}
+// }
 
 module roundedTop()
 {
