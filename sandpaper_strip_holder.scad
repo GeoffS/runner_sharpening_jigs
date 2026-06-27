@@ -162,8 +162,9 @@ module clip(d=0)
 if(developmentRender)
 {
 	display() itemModule();
-	displayGhost() runnerGhost(width=3/8*mm, angle=90);
-	displayGhost() paperGhost(angle=90);
+	// displayGhost() runnerGhost(width=3/8*mm, angle=90);
+	// displayGhost() paperGhost(angle=90);
+
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
 	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
 }
