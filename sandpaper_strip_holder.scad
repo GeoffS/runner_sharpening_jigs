@@ -5,14 +5,14 @@ firstLayerHeight = 0.2;
 layerHeight = 0.2;
 
 // Measured dimensions of a card, in mm:
-// cardX = 82.6; // 3.25 * mm;
-// cardY = 50.1; //2.00 * mm;  
-cardX = 50.1;
-cardY = 82.6;
-cardZ = 1.4; //0.05 * mm;
-echo(str("Card = ", cardX, " x ", cardY, " x ", cardZ));
+// paperX = 82.6; // 3.25 * mm;
+// paperY = 50.1; //2.00 * mm;  
+paperX = 50.1;
+paperY = 93;
+paperZ = 0.3;;
+echo(str("Paper = ", paperX, " x ", paperY, " x ", paperZ));
 
-sideX = cardX + 2*10;
+sideX = paperX + 2*10;
 
 nutThThickness = 3;
 nutRecessX = 3;
@@ -21,17 +21,19 @@ pivotScrewMinLength = sideX + nutThThickness - nutRecessX;
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength, " mm"));
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
 
-cardSideX = 20; //cardX + 2*10;
-cardSideY = cardY + 2*12;
-cardSideZ = cardZ + 8;
+cardSideX = 20; //paperX + 2*10;
+cardSideY = paperY + 2*12;
+cardSideZ = paperZ + 8;
 
 offSideX = 20;
 offSideY = cardSideY;
 offSideZ = cardSideZ;
 
-cardSlotX = cardX - 6;
-cardSlotY = cardY + 1;
-cardSlotZ = cardZ + 0.3;
+cardSlotX = paperX - 6;
+cardSlotY = paperY + 1;
+cardSlotZ = paperZ; // + 0.3;
+
+paperSlotExtraZ = 0; //0.1; //0.04;
 
 endCZ = 2;
 
@@ -78,22 +80,31 @@ module jig(angle, edgeClearance)
 			}	
 		}
 
-		// Card slot:
-		cardSlotExtraZ  = 0.04; // about 1.6 thou inches
-		#rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, -cardSlotExtraZ], [200, cardSlotY, cardSlotZ]);
+		// Paper slot:
+		// cardSlotExtraZ  = 0.04; // about 1.6 thou inches
+		// rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, -cardSlotExtraZ], [200, cardSlotY, cardSlotZ]);
+        rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, -paperSlotExtraZ], [200, cardSlotY, cardSlotZ]);
 
-		// Card retention-screw holes:
-		cardSlotRetneentionScrewHole(a2, y=0);
-		doubleY() cardSlotRetneentionScrewHole(a2, y=cardSlotY/2 - 10);
+		// // Card retention-screw holes:
+		// cardSlotRetneentionScrewHole(a2, y=0);
+		// doubleY() cardSlotRetneentionScrewHole(a2, y=cardSlotY/2 - 10);
 
 		// Crud clearance above the sharpened edge:
-		rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
-		tcu([-edgeClearance/2, -200, -100], [edgeClearance, 400, 100]);
-		doubleY() hull()
-		{
-			translate([0,cardSideY/2-edgeClearance/2-endCZ,0]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
-			translate([0,cardSideY/2-edgeClearance/2-endCZ,-100]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
-		}
+		// rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
+        ec2 = edgeClearance/2;
+		tcu([-ec2, -200, -100], [ec2, 400, 100]);
+        clip = edgeClearance/4;
+        clipOffsetX = paperZ/4;
+        clipX = edgeClearance * cos(a2) * 0.5 + clipOffsetX;
+        clipZ = edgeClearance * cos(a2) * 0.5;
+        echo(str("clipX = ", clipX));
+        echo(str("clipZ = ", clipZ));
+        translate([0, -200, 0]) rotate([0,-a2,0]) tcu([-clipX+clipOffsetX,0,0], [clipX, 400, clipZ]);
+		// doubleY() hull()
+		// {
+		// 	translate([0,cardSideY/2-edgeClearance/2-endCZ,0]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
+		// 	translate([0,cardSideY/2-edgeClearance/2-endCZ,-100]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
+		// }
 		
 	}
 }
@@ -157,14 +168,14 @@ module clip(d=0)
 {
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
-	tcu([-200, -400-d, -200], 400);
+	tcu([-200, -400+d, -200], 400);
 }
 
 if(developmentRender)
 {
 	display() itemModule();
 	displayGhost() runnerGhost(width=3/8*mm, angle=90);
-	displayGhost() cardGhost(angle=90);
+	displayGhost() paperGhost(angle=90);
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
 	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
 }
@@ -185,7 +196,7 @@ module runnerGhost(width, angle)
 	}
 }
 
-module cardGhost(angle=90)
+module paperGhost(angle=90)
 {
-	rotate([0,angle/2,0]) tcu([cardSlotExtensionX, -cardY/2, 0], [cardX, cardY, cardZ]);
+	rotate([0,angle/2,0]) tcu([cardSlotExtensionX, -paperY/2, -paperSlotExtraZ], [paperX, paperY, paperZ]);
 }
