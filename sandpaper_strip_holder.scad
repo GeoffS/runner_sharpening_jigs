@@ -19,7 +19,7 @@ nutRecessX = 3;
 
 extensionY = 12;
 
-paperSideX = 20; //paperX + 2*10;
+paperSideX = 20;
 paperSideY = paperY + 2*extensionY;
 paperSideZ = paperZ + 8;
 
@@ -29,18 +29,16 @@ offSideZ = paperSideZ;
 
 paperSlotX = paperX - 6;
 paperSlotY = paperY + 1;
-paperSlotZ = paperZ; // + 0.3;
+paperSlotZ = paperZ;
 
-paperSlotExtraZ = 0; //0.1; //0.04;
+paperSlotExtraZ = paperSlotZ;
 
 endCZ = 2;
 
-// paperSlotExtension():
 outsideX = paperSideX-offSideZ/2;
 insideX = 12;
 paperSideExtensionIMiddleX = (outsideX + insideX)/2;
 
-paperSlotExtensionX = -5;
 retentionScrewHoleDia = 3.0;;
 
 module itemModule()
@@ -78,19 +76,19 @@ module jig(angle, edgeClearance)
 			}	
 		}
 
-		// Paper slot:
-        rotate([0,a2,0]) tcu([paperSlotExtensionX, -paperSlotY/2, -paperSlotExtraZ], [200, paperSlotY, paperSlotZ]);
-
 		// Clearance on the off-side for debris::
         ec2 = edgeClearance/2;
 		tcu([-ec2, -200, -100], [ec2, 400, 100]);
         clip = edgeClearance/4;
-        clipOffsetX = paperZ/4;
+        clipOffsetX = 0; //paperZ/4;
         clipX = edgeClearance * cos(a2) * 0.5 + clipOffsetX;
         clipZ = edgeClearance * cos(a2) * 0.5;
         echo(str("clipX = ", clipX));
         echo(str("clipZ = ", clipZ));
         translate([0, -200, 0]) rotate([0,-a2,0]) tcu([-clipX+clipOffsetX,0,0], [clipX, 400, clipZ]);
+
+		// Paper slot:
+        rotate([0,a2,0]) tcu([-clipX+clipOffsetX, -paperSlotY/2, -paperSlotExtraZ], [200, paperSlotY, paperSlotZ]);
 
         // Clearance at the end for debris:
         doubleY()
@@ -126,18 +124,9 @@ module jig(angle, edgeClearance)
 	}
 }
 
-// module paperSlotRetneentionScrewHole(a2, y)
-// {
-// 	rotate([0,a2,0]) 
-// 	{
-// 		tcy([paperSlotExtensionX/2,y,0], d=retentionScrewHoleDia, h=100);
-// 		tcy([paperSideExtensionIMiddleX,y,0], d=retentionScrewHoleDia, h=100);
-// 	}
-// }
-
 module roundedTop()
 {
-	d = paperSideZ + 6; //paperSideZ*2;
+	d = paperSideZ + 6;
 
 	translate([1.5,0,1]) difference()
 	{
@@ -185,15 +174,15 @@ module clip(d=0)
 {
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
-    tcu([-400, -200, -200], 400);
-	// tcu([-200, -400+d, -200], 400);
+    // tcu([-400, -200, -200], 400);
+	tcu([-200, -400+d, -200], 400);
 }
 
 if(developmentRender)
 {
 	display() itemModule();
 	// displayGhost() runnerGhost(width=3/8*mm, angle=90);
-	// displayGhost() paperGhost(angle=90);
+	displayGhost() paperGhost(angle=90);
 
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
 	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
@@ -217,5 +206,5 @@ module runnerGhost(width, angle)
 
 module paperGhost(angle=90)
 {
-	rotate([0,angle/2,0]) tcu([paperSlotExtensionX, -paperY/2, -paperSlotExtraZ], [paperX, paperY, paperZ]);
+	rotate([0,angle/2,0]) tcu([0, -paperY/2, -paperSlotExtraZ], [paperX, paperY, paperZ]);
 }
