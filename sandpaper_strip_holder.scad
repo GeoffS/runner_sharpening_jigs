@@ -97,7 +97,7 @@ module jig(angle, edgeClearance)
             tcu([0, 0, 0], [200, paperSlotY, paperSlotZ]);
 
             paperSlotTurnDia = 6;
-            paperSlotTurnAngle = 20;
+            paperSlotTurnAngle = 45;
             rotate([-90,0,0]) difference()
             {
                 tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
