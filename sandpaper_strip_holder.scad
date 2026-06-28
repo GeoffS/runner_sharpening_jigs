@@ -93,20 +93,25 @@ module jig(angle, edgeClearance)
         translate([0, -200, 0]) rotate([0,-a2,0]) tcu([-clipX+clipOffsetX,0,0], [clipX, 400, clipZ]);
 
         // Clearance at the endg for debris:
-        endCleanance = 6;
-        rotate([-90,0,0]) tcy([0,0,-paperSideY/2], d=endCleanance, h=extensionY);
-		tcu([-endCleanance/2, -200, -100], [endCleanance, 400, extensionY]);
-		hull()
-		{
-            coneZ = 20;
-            // MAGIC!!!!!
-            //   vvvvv
-            cz = 1.104;
-            endChamferOffsetY = -paperSideY/2 - coneZ + endCleanance/2 + cz;
-			translate([0, endChamferOffsetY,    0]) rotate([-90,0,0]) cylinder(d1=coneZ*2, d2=0, h=coneZ);
-			translate([0, endChamferOffsetY, -100]) rotate([-90,0,0]) cylinder(d1=coneZ*2, d2=0, h=coneZ);
-		}
-		
+        doubleY()
+        {
+            endCleanceDia = 6;
+            // Cylinder:
+            rotate([-90,0,0]) tcy([0,0,-paperSlotY/2-100-0.5], d=endCleanceDia, h=100);
+            tcu([-endCleanceDia/2, -200, -100], [endCleanceDia, 400, 100]);
+
+            // End Chamfer:
+            hull()
+            {
+                coneZ = 20;
+                // MAGIC!!!!!
+                //   vvvvv
+                cz = 1.104;
+                endChamferOffsetY = -paperSideY/2 - coneZ + endCleanceDia/2 + cz;
+                translate([0, endChamferOffsetY,    0]) rotate([-90,0,0]) cylinder(d1=coneZ*2, d2=0, h=coneZ);
+                translate([0, endChamferOffsetY, -100]) rotate([-90,0,0]) cylinder(d1=coneZ*2, d2=0, h=coneZ);
+            }
+        }
 	}
 }
 
