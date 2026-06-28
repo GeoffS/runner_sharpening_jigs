@@ -4,7 +4,7 @@ include <../OpenSCAD_Lib/chamferedCylinders.scad>
 firstLayerHeight = 0.2;
 layerHeight = 0.2;
 
-// Measured dimensions of a card, in mm:
+// Measured dimensions of a paper, in mm:
 // paperX = 82.6; // 3.25 * mm;
 // paperY = 50.1; //2.00 * mm;  
 paperX = 50.1;
@@ -21,28 +21,28 @@ pivotScrewMinLength = sideX + nutThThickness - nutRecessX;
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength, " mm"));
 echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
 
-cardSideX = 20; //paperX + 2*10;
-cardSideY = paperY + 2*12;
-cardSideZ = paperZ + 8;
+paperSideX = 20; //paperX + 2*10;
+paperSideY = paperY + 2*12;
+paperSideZ = paperZ + 8;
 
 offSideX = 20;
-offSideY = cardSideY;
-offSideZ = cardSideZ;
+offSideY = paperSideY;
+offSideZ = paperSideZ;
 
-cardSlotX = paperX - 6;
-cardSlotY = paperY + 1;
-cardSlotZ = paperZ; // + 0.3;
+paperSlotX = paperX - 6;
+paperSlotY = paperY + 1;
+paperSlotZ = paperZ; // + 0.3;
 
 paperSlotExtraZ = 0; //0.1; //0.04;
 
 endCZ = 2;
 
-// cardSlotExtension():
-outsideX = cardSideX-offSideZ/2;
+// paperSlotExtension():
+outsideX = paperSideX-offSideZ/2;
 insideX = 12;
-cardSideExtensionIMiddleX = (outsideX + insideX)/2;
+paperSideExtensionIMiddleX = (outsideX + insideX)/2;
 
-cardSlotExtensionX = -5;
+paperSlotExtensionX = -5;
 retentionScrewHoleDia = 3.0;;
 
 module itemModule()
@@ -57,16 +57,16 @@ module jig(angle, edgeClearance)
 
 	difference()
 	{
-		// The main body of the card holder:
+		// The main body of the paper holder:
 		union()
 		{
 			// Sides:
 			hull()
 			{
-				rotate([0,a2,0]) cardSide();
+				rotate([0,a2,0]) paperSide();
 				roundedTop();
 			}
-			rotate([0,a2,0]) cardSideExtension();
+			rotate([0,a2,0]) paperSideExtension();
 
 			hull()
 			{
@@ -81,7 +81,7 @@ module jig(angle, edgeClearance)
 		}
 
 		// Paper slot:
-        rotate([0,a2,0]) tcu([cardSlotExtensionX, -cardSlotY/2, -paperSlotExtraZ], [200, cardSlotY, cardSlotZ]);
+        rotate([0,a2,0]) tcu([paperSlotExtensionX, -paperSlotY/2, -paperSlotExtraZ], [200, paperSlotY, paperSlotZ]);
 
 		// Clearance on the off-side for debris::
         ec2 = edgeClearance/2;
@@ -93,41 +93,50 @@ module jig(angle, edgeClearance)
         echo(str("clipX = ", clipX));
         echo(str("clipZ = ", clipZ));
         translate([0, -200, 0]) rotate([0,-a2,0]) tcu([-clipX+clipOffsetX,0,0], [clipX, 400, clipZ]);
+
+        // Clearance at the endg for debris:
+        rotate([-90,0,0]) tcy([0,0,-200], d=edgeClearance, h=400);
+		tcu([-edgeClearance/2, -200, -100], [edgeClearance, 400, 100]);
+		// doubleY() hull()
+		// {
+		// 	translate([0,paperSideY/2-edgeClearance/2-endCZ,0]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
+		// 	translate([0,paperSideY/2-edgeClearance/2-endCZ,-100]) rotate([-90,0,0]) cylinder(d2=10, d1=0, h=5);
+		// }
 		
 	}
 }
 
-// module cardSlotRetneentionScrewHole(a2, y)
+// module paperSlotRetneentionScrewHole(a2, y)
 // {
 // 	rotate([0,a2,0]) 
 // 	{
-// 		tcy([cardSlotExtensionX/2,y,0], d=retentionScrewHoleDia, h=100);
-// 		tcy([cardSideExtensionIMiddleX,y,0], d=retentionScrewHoleDia, h=100);
+// 		tcy([paperSlotExtensionX/2,y,0], d=retentionScrewHoleDia, h=100);
+// 		tcy([paperSideExtensionIMiddleX,y,0], d=retentionScrewHoleDia, h=100);
 // 	}
 // }
 
 module roundedTop()
 {
-	d = cardSideZ + 6; //cardSideZ*2;
+	d = paperSideZ + 6; //paperSideZ*2;
 
 	translate([1.5,0,1]) difference()
 	{
-		rotate([-90,0,0]) translate([0,0,-cardSideY/2]) simpleChamferedCylinderDoubleEnded(d=d, h=cardSideY, cz=endCZ);
+		rotate([-90,0,0]) translate([0,0,-paperSideY/2]) simpleChamferedCylinderDoubleEnded(d=d, h=paperSideY, cz=endCZ);
 		tcu([-200, -200, -400], 400);
 		tcu([-400, -200, -200], 400);
 	}
 }
 
-module cardSide()
+module paperSide()
 {
 	hull()
 	{
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([0,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([cardSideX-offSideZ/2,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([paperSideX-offSideZ/2,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 	}
 }
 
-module cardSideExtension()
+module paperSideExtension()
 {
 	hull()
 	{
@@ -139,7 +148,7 @@ module cardSideExtension()
 
 		// MAGIC!!!!!
 		//   ------------------------------------------------------------------------vvvv
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([cardSideExtensionIMiddleX,dy-1.3,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([paperSideExtensionIMiddleX,dy-1.3,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 	}
 }
 
@@ -187,5 +196,5 @@ module runnerGhost(width, angle)
 
 module paperGhost(angle=90)
 {
-	rotate([0,angle/2,0]) tcu([cardSlotExtensionX, -paperY/2, -paperSlotExtraZ], [paperX, paperY, paperZ]);
+	rotate([0,angle/2,0]) tcu([paperSlotExtensionX, -paperY/2, -paperSlotExtraZ], [paperX, paperY, paperZ]);
 }
