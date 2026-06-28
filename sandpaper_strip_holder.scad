@@ -92,18 +92,24 @@ module jig(angle, edgeClearance)
         echo(str("clipZ = ", clipZ));
         translate([0, -200, 0]) rotate([0,-a2,0]) tcu([-clipX+clipOffsetX,0,0], [clipX, 400, clipZ]);
 
-        // Clearance at the endg for debris:
+        // Clearance at the end for debris:
         doubleY()
         {
             endCleanceDia = 6;
+            // MAGIC!!!!!
+            //   ------------------------------------------------------vvvvv
+            transitionChamferOffsetY = -paperSlotY/2-endCleanceDia/2 + 0.535; //+edgeClearance/2;
 
             // Transition to end clerance cylinder:
-            transitionChamferOffsetY = -paperSlotY/2-endCleanceDia/2+edgeClearance/2;
-            rotate([-90,0,0]) translate([0,0,transitionChamferOffsetY]) cylinder(d1=endCleanceDia, d2=0, h=endCleanceDia/2);
+            hull()
+            {
+                rotate([-90,0,0]) translate([0,0,transitionChamferOffsetY]) cylinder(d1=endCleanceDia, d2=0, h=endCleanceDia/2);
+                rotate([-90,0,0]) translate([0,20,transitionChamferOffsetY]) cylinder(d1=endCleanceDia, d2=0, h=endCleanceDia/2);
+            }
 
             // Cylinder:
             rotate([-90,0,0]) tcy([0,0,transitionChamferOffsetY-100+nothing], d=endCleanceDia, h=100);
-            tcu([-endCleanceDia/2, -200, -100], [endCleanceDia, 400, 100]);
+            tcu([-endCleanceDia/2, transitionChamferOffsetY-400+nothing, -100], [endCleanceDia, 400, 100]);
 
             // End Chamfer:
             hull()
@@ -161,8 +167,8 @@ module paperSideExtension()
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([outsideX,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 
 		// MAGIC!!!!!
-		//   ------------------------------------------------------------------------vvvv
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([paperSideExtensionIMiddleX,dy-1.3,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		//   ---------------------------------------------------------------------------------------------vvv
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([paperSideExtensionIMiddleX, dy-1.3, 0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 	}
 }
 
@@ -179,7 +185,7 @@ module clip(d=0)
 {
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
-	// tcu([-200, -400+d, -200], 400);
+	tcu([-200, -400+d, -200], 400);
 }
 
 if(developmentRender)
