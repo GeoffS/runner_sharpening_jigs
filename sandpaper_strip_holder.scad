@@ -88,7 +88,26 @@ module jig(angle, edgeClearance)
         translate([0, -200, 0]) rotate([0,-a2,0]) tcu([-clipX+clipOffsetX,0,0], [clipX, 400, clipZ]);
 
 		// Paper slot:
-        rotate([0,a2,0]) tcu([-clipX+clipOffsetX, -paperSlotY/2, -paperSlotExtraZ], [200, paperSlotY, paperSlotZ]);
+        rotate([0,a2,0]) translate([-clipX+clipOffsetX, -paperSlotY/2, -paperSlotExtraZ]) 
+        {
+            
+            // Slot to the bottom:
+            #tcu([0, 0, 0], [200, paperSlotY, paperSlotZ]);
+
+            paperSlotTurnDia = 6;
+            paperSlotTurnAngle = 20;
+            #rotate([-90,0,0]) difference()
+            {
+                tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
+
+                tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
+
+                tcu([0,-200,-100], 400);
+                translate([0, -paperSlotTurnDia/2, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-400,-200,-100], 400);
+            }
+
+            #translate([0, 0, 0]) rotate([0,paperSlotTurnAngle,0]) tcu([-200, 0, 0], [200, paperSlotY, paperSlotZ]);
+        }
 
         // Clearance at the end for debris:
         doubleY()
@@ -182,7 +201,7 @@ if(developmentRender)
 {
 	display() itemModule();
 	// displayGhost() runnerGhost(width=3/8*mm, angle=90);
-	displayGhost() paperGhost(angle=90);
+	// displayGhost() paperGhost(angle=90);
 
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
 	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
