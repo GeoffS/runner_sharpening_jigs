@@ -101,7 +101,6 @@ module jig(angle, edgeClearance)
             rotate([-90,0,0]) difference()
             {
                 tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
-                %tcy([0,-paperSlotTurnDia/2,0], d=0.2, h=paperSlotY, $fn=180);
 
                 tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
 
@@ -110,8 +109,8 @@ module jig(angle, edgeClearance)
             }
 
             shift = paperSlotTurnDia/2;
-            rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
-            // rotate([-90,0,0]) translate([0, 0, 0]) rotate([0,0,0]) tcu([-200, 0, 0], [200, paperSlotY, paperSlotZ]);
+            rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) 
+                tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
         }
 
         // Clearance at the end for debris:
@@ -206,7 +205,7 @@ if(developmentRender)
 {
 	display() itemModule();
 	// displayGhost() runnerGhost(width=3/8*mm, angle=90);
-	// displayGhost() paperGhost(angle=90);
+	displayGhost() paperGhost(angle=90);
 
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
 	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
