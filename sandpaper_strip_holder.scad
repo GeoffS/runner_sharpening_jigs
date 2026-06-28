@@ -17,10 +17,6 @@ sideX = paperX + 2*10;
 nutThThickness = 3;
 nutRecessX = 3;
 
-pivotScrewMinLength = sideX + nutThThickness - nutRecessX;
-echo(str("pivotScrewMinLength = ", pivotScrewMinLength, " mm"));
-echo(str("pivotScrewMinLength = ", pivotScrewMinLength/mm, " inches"));
-
 paperSideX = 20; //paperX + 2*10;
 paperSideY = paperY + 2*12;
 paperSideZ = paperZ + 8;
