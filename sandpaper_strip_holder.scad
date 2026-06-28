@@ -96,8 +96,13 @@ module jig(angle, edgeClearance)
         doubleY()
         {
             endCleanceDia = 6;
+
+            // Transition to end clerance cylinder:
+            transitionChamferOffsetY = -paperSlotY/2-endCleanceDia/2+edgeClearance/2;
+            rotate([-90,0,0]) translate([0,0,transitionChamferOffsetY]) cylinder(d1=endCleanceDia, d2=0, h=endCleanceDia/2);
+
             // Cylinder:
-            rotate([-90,0,0]) tcy([0,0,-paperSlotY/2-100-0.5], d=endCleanceDia, h=100);
+            rotate([-90,0,0]) tcy([0,0,transitionChamferOffsetY-100+nothing], d=endCleanceDia, h=100);
             tcu([-endCleanceDia/2, -200, -100], [endCleanceDia, 400, 100]);
 
             // End Chamfer:
