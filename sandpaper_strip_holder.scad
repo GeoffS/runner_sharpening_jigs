@@ -39,7 +39,9 @@ outsideX = paperSideX-offSideZ/2;
 insideX = 12;
 paperSideExtensionIMiddleX = (outsideX + insideX)/2;
 
-retentionScrewHoleDia = 3.0;;
+retentionScrewHoleDia = 3.0;
+
+$fn=180;
 
 module itemModule()
 {
@@ -92,13 +94,14 @@ module jig(angle, edgeClearance)
         {
             
             // Slot to the bottom:
-            #tcu([0, 0, 0], [200, paperSlotY, paperSlotZ]);
+            tcu([0, 0, 0], [200, paperSlotY, paperSlotZ]);
 
             paperSlotTurnDia = 6;
             paperSlotTurnAngle = 20;
-            #rotate([-90,0,0]) difference()
+            rotate([-90,0,0]) difference()
             {
                 tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
+                %tcy([0,-paperSlotTurnDia/2,0], d=0.2, h=paperSlotY, $fn=180);
 
                 tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
 
@@ -106,7 +109,9 @@ module jig(angle, edgeClearance)
                 translate([0, -paperSlotTurnDia/2, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-400,-200,-100], 400);
             }
 
-            #translate([0, 0, 0]) rotate([0,paperSlotTurnAngle,0]) tcu([-200, 0, 0], [200, paperSlotY, paperSlotZ]);
+            shift = paperSlotTurnDia/2;
+            rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
+            // rotate([-90,0,0]) translate([0, 0, 0]) rotate([0,0,0]) tcu([-200, 0, 0], [200, paperSlotY, paperSlotZ]);
         }
 
         // Clearance at the end for debris:
