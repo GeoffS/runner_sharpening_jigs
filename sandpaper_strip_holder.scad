@@ -97,11 +97,20 @@ module jig(angle, edgeClearance)
             tcu([0, 0, 0], [200, paperSlotY, paperSlotZ]);
 
             // Chamfer at bottom entry:
+            // MAGIC!!!
+            //  -------++++
+            //  -------||||-------------------------------------+
+            //  -------vvvv-------------------------------------v------------------------vvvv
             translate([20.6,0,0]) rotate([-90,0,0]) rotate([0,0,8]) tcy([0,-paperSlotZ/2+0.17,0], d=2, h=paperSlotY, $fn=4); 
             
             // Chamfer at exit to blade:
+            // MAGIC!!!
+            //  -------+++
+            //  -------vvv-------------------------------------v
             translate([8.3,0,0]) rotate([-90,0,0]) rotate([0,0,0]) 
             {
+                // MAGIC!!!
+                //  -----------------------vvvv
                 translate([0,-paperSlotZ/2+0.07,0]) difference()
                 {
                     cylinder(d=2, h=paperSlotY, $fn=4); 
