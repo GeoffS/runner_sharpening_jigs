@@ -227,7 +227,7 @@ module clip(d=0)
 if(developmentRender)
 {
 	display() itemModule();
-	// displayGhost() runnerGhost(width=3/8*mm, angle=90);
+	displayGhost() runnerGhost(width=3/8*mm, angle=90);
 	displayGhost() paperGhost(angle=90);
 
 	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
@@ -242,7 +242,9 @@ module runnerGhost(width, angle)
 {
 	y = 160;
 	z = 40;
-	translate([0,0,-0.05]) difference()
+    dz = 0.35;
+    dx = dz; //0.65;
+	translate([-dx,0,-0.05-dz]) difference()
 	{
 		tcu([-width/2, -y/2, -z], [width, y, z]);
 
@@ -252,5 +254,5 @@ module runnerGhost(width, angle)
 
 module paperGhost(angle=90)
 {
-	rotate([0,angle/2,0]) tcu([0, -paperY/2, -paperSlotExtraZ], [paperX, paperY, paperZ]);
+	rotate([0,angle/2,0]) tcu([-.5, -paperY/2, -paperSlotExtraZ], [paperX, paperY, paperZ]);
 }
