@@ -9,7 +9,7 @@ layerHeight = 0.2;
 // paperY = 50.1; //2.00 * mm;  
 paperX = 50.1;
 paperY = 93;
-paperZ = 0.3;;
+paperZ = 0.5;
 echo(str("Paper = ", paperX, " x ", paperY, " x ", paperZ));
 
 sideX = paperX + 2*10;
