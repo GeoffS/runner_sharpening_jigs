@@ -96,6 +96,20 @@ module jig(angle, edgeClearance)
             // Slot to the bottom:
             tcu([0, 0, 0], [200, paperSlotY, paperSlotZ]);
 
+            // Chamfer at bottom entry:
+            translate([20.6,0,0]) rotate([-90,0,0]) rotate([0,0,8]) tcy([0,-paperSlotZ/2+0.17,0], d=2, h=paperSlotY, $fn=4); 
+            
+            // Chamfer at exit to blade:
+            translate([8.3,0,0]) rotate([-90,0,0]) rotate([0,0,0]) 
+            {
+                translate([0,-paperSlotZ/2+0.07,0]) difference()
+                {
+                    cylinder(d=2, h=paperSlotY, $fn=4); 
+                    tcu([-200,-400,-10], 400);
+                }
+            }
+
+            // Slot through the top:
             paperSlotTurnDia = 6;
             paperSlotTurnAngle = 45;
             rotate([-90,0,0]) difference()
@@ -198,7 +212,7 @@ module clip(d=0)
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
     // tcu([-400, -200, -200], 400);
-	// tcu([-200, -400+d, -200], 400);
+	tcu([-200, -400+d, -200], 400);
 }
 
 if(developmentRender)
