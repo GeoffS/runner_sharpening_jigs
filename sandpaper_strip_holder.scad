@@ -34,10 +34,10 @@ retentionScrewHoleDia = 3.0;
 
 $fn=180;
 
-module itemModule()
-{
-	jig(angle=90, edgeClearance=1.5);
-}
+// module itemModule()
+// {
+// 	jig(angle=90, edgeClearance=1.5);
+// }
 
 module jig(angle, edgeClearance, throughSlot=false, extensionY)
 {
@@ -121,23 +121,25 @@ module jig(angle, edgeClearance, throughSlot=false, extensionY)
                 }
             }
 
-            
-            // Slot through the top:
-            paperSlotTurnDia = 6;
-            paperSlotTurnAngle = 45;
-            rotate([-90,0,0]) difference()
+            if(throughSlot)
             {
-                tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
+                // Slot through the top:
+                paperSlotTurnDia = 6;
+                paperSlotTurnAngle = 45;
+                rotate([-90,0,0]) difference()
+                {
+                    tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
 
-                tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
+                    tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
 
-                tcu([0,-200,-100], 400);
-                translate([0, -paperSlotTurnDia/2, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-400,-200,-100], 400);
+                    tcu([0,-200,-100], 400);
+                    translate([0, -paperSlotTurnDia/2, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-400,-200,-100], 400);
+                }
+
+                shift = paperSlotTurnDia/2;
+                rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) 
+                    tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
             }
-
-            shift = paperSlotTurnDia/2;
-            rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) 
-                tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
         }
 
         // Clearance at the end for debris:
@@ -236,7 +238,7 @@ module clip(d=0)
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
     // tcu([-400, -200, -200], 400);
-	// tcu([-200, -400+d, -200], 400);
+	tcu([-200, -400+d, -200], 400);
 }
 
 if(developmentRender)
