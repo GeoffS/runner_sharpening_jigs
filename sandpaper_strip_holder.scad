@@ -48,7 +48,7 @@ module itemModule()
 	jig(angle=90, edgeClearance=1.5);
 }
 
-module jig(angle, edgeClearance)
+module jig(angle, edgeClearance, throughSlot=false)
 {
 	echo(str("jig( ", angle, ")"));
 	a2 = angle/2;
@@ -94,7 +94,8 @@ module jig(angle, edgeClearance)
         {
             
             // Slot to the bottom:
-            tcu([0, 0, 0], [200, paperSlotY, paperSlotZ]);
+            slotOffsetX = throughSlot ? 0 : -1;
+            tcu([slotOffsetX, 0, 0], [200, paperSlotY, paperSlotZ]);
 
             // Chamfer at bottom entry:
             // MAGIC!!!
@@ -118,22 +119,25 @@ module jig(angle, edgeClearance)
                 }
             }
 
-            // Slot through the top:
-            paperSlotTurnDia = 6;
-            paperSlotTurnAngle = 45;
-            rotate([-90,0,0]) difference()
+            if(throughSlot)
             {
-                tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
+                // Slot through the top:
+                paperSlotTurnDia = 6;
+                paperSlotTurnAngle = 45;
+                rotate([-90,0,0]) difference()
+                {
+                    tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
 
-                tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
+                    tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
 
-                tcu([0,-200,-100], 400);
-                translate([0, -paperSlotTurnDia/2, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-400,-200,-100], 400);
+                    tcu([0,-200,-100], 400);
+                    translate([0, -paperSlotTurnDia/2, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-400,-200,-100], 400);
+                }
+
+                shift = paperSlotTurnDia/2;
+                rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) 
+                    tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
             }
-
-            shift = paperSlotTurnDia/2;
-            rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) 
-                tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
         }
 
         // Clearance at the end for debris:
@@ -226,7 +230,7 @@ module clip(d=0)
 
 if(developmentRender)
 {
-	display() itemModule();
+	display() jig(angle=90, edgeClearance=1.5, throughSlot=true);
 	displayGhost() runnerGhost(width=3/8*mm, angle=90);
 	displayGhost() paperGhost(angle=90);
 
