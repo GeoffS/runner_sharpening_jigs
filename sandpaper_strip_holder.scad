@@ -20,16 +20,6 @@ sideX = paperX + 2*10;
 nutThThickness = 3;
 nutRecessX = 3;
 
-extensionY = 6;
-
-paperSideX = 20;
-paperSideY = paperY + 2*extensionY;
-paperSideZ = paperZ + 8;
-
-offSideX = 12;
-offSideY = paperSideY;
-offSideZ = paperSideZ;
-
 paperSlotX = paperX - 6;
 paperSlotY = paperY + 1;
 paperSlotZ = paperZ;
@@ -38,9 +28,7 @@ paperSlotExtraZ = paperSlotZ;
 
 endCZ = 2;
 
-outsideX = paperSideX-offSideZ/2;
-insideX = 12;
-paperSideExtensionIMiddleX = (outsideX + insideX)/2;
+
 
 retentionScrewHoleDia = 3.0;
 
@@ -51,10 +39,21 @@ module itemModule()
 	jig(angle=90, edgeClearance=1.5);
 }
 
-module jig(angle, edgeClearance, throughSlot=false)
+module jig(angle, edgeClearance, throughSlot=false, extensionY)
 {
 	echo(str("jig( ", angle, ")"));
 	a2 = angle/2;
+
+    paperSideX = 20;
+    paperSideY = paperY + 2*extensionY;
+    paperSideZ = paperZ + 8;
+
+    offSideX = 12;
+    offSideY = paperSideY;
+    offSideZ = paperSideZ;
+
+    outsideX = paperSideX-offSideZ/2;
+    insideX = 12;
 
 	difference()
 	{
@@ -64,20 +63,20 @@ module jig(angle, edgeClearance, throughSlot=false)
 			// Sides:
 			hull()
 			{
-				rotate([0,a2,0]) paperSide();
-				roundedTop();
+				rotate([0,a2,0]) paperSide(paperSideX, offSideY, offSideZ);
+				roundedTop(paperSideY, paperSideZ);
 			}
-			rotate([0,a2,0]) paperSideExtension();
+			rotate([0,a2,0]) paperSideExtension(insideX, outsideX, offSideY, offSideZ);
 
 			hull()
 			{
-				rotate([0,-a2,0]) offSide();
-				mirror([1,0,0]) roundedTop();
+				rotate([0,-a2,0]) offSide(offSideX, offSideY, offSideZ);
+				mirror([1,0,0]) roundedTop(paperSideY, paperSideZ);
 			}	
 			hull()
 			{
-				roundedTop();
-				mirror([1,0,0]) roundedTop();
+				roundedTop(paperSideY, paperSideZ);
+				mirror([1,0,0]) roundedTop(paperSideY, paperSideZ);
 			}	
 		}
 
@@ -122,25 +121,23 @@ module jig(angle, edgeClearance, throughSlot=false)
                 }
             }
 
-            if(throughSlot)
+            
+            // Slot through the top:
+            paperSlotTurnDia = 6;
+            paperSlotTurnAngle = 45;
+            rotate([-90,0,0]) difference()
             {
-                // Slot through the top:
-                paperSlotTurnDia = 6;
-                paperSlotTurnAngle = 45;
-                rotate([-90,0,0]) difference()
-                {
-                    tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
+                tcy([0,-paperSlotTurnDia/2,0], d=paperSlotTurnDia, h=paperSlotY);
 
-                    tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
+                tcy([0,-paperSlotTurnDia/2,-100], d=paperSlotTurnDia-2*paperSlotZ, h=400);
 
-                    tcu([0,-200,-100], 400);
-                    translate([0, -paperSlotTurnDia/2, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-400,-200,-100], 400);
-                }
-
-                shift = paperSlotTurnDia/2;
-                rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) 
-                    tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
+                tcu([0,-200,-100], 400);
+                translate([0, -paperSlotTurnDia/2, 0]) rotate([0,0,paperSlotTurnAngle]) tcu([-400,-200,-100], 400);
             }
+
+            shift = paperSlotTurnDia/2;
+            rotate([-90,0,0]) translate([0, -shift, 0]) rotate([0,0,paperSlotTurnAngle]) 
+                tcu([-100, shift-paperSlotZ, 0], [100, paperSlotZ, paperSlotY]);
         }
 
         // Clearance at the end for debris:
@@ -148,28 +145,37 @@ module jig(angle, edgeClearance, throughSlot=false)
         {
             endCleanceDia = 6;
             // MAGIC!!!!!
-            //   ------------------------------------------------------vvvvv
-            transitionChamferOffsetY = -paperSlotY/2-endCleanceDia/2 + 0.535; //+edgeClearance/2;
+            //   ------------------------------------------------------vvv
+            transitionChamferOffsetY = -paperSlotY/2-endCleanceDia/2 - 0.2;
 
-            // Transition to end clerance cylinder:
-            hull()
+            magicExtensionYLimit = 4;
+            echo(str("extensionY = ", extensionY));
+            if(extensionY > magicExtensionYLimit)
             {
-                rotate([-90,0,0]) translate([0,0,transitionChamferOffsetY]) cylinder(d1=endCleanceDia, d2=0, h=endCleanceDia/2);
-                rotate([-90,0,0]) translate([0,20,transitionChamferOffsetY]) cylinder(d1=endCleanceDia, d2=0, h=endCleanceDia/2);
+                // Transition to end clerance cylinder:
+                hull()
+                {
+                    rotate([-90,0,0]) translate([0,0,transitionChamferOffsetY]) cylinder(d1=endCleanceDia, d2=0, h=endCleanceDia/2);
+                    rotate([-90,0,0]) translate([0,20,transitionChamferOffsetY]) cylinder(d1=endCleanceDia, d2=0, h=endCleanceDia/2);
+                }
+
+            
+                rotate([-90,0,0]) tcy([0,0,transitionChamferOffsetY-100+nothing], d=endCleanceDia, h=100);
+                tcu([-endCleanceDia/2, transitionChamferOffsetY-400+nothing, -100], [endCleanceDia, 400, 100]);
             }
 
-            // Cylinder:
-            rotate([-90,0,0]) tcy([0,0,transitionChamferOffsetY-100+nothing], d=endCleanceDia, h=100);
-            tcu([-endCleanceDia/2, transitionChamferOffsetY-400+nothing, -100], [endCleanceDia, 400, 100]);
-
             // End Chamfer:
+            coneZ = 20;
+            endChamferOffsetBigExtensionY = -paperSideY/2 - coneZ + endCleanceDia/2 + endCZ;
+            // MAGIC!!!!
+            //  ------------------------------------------------------------------vvvv
+            endChamferOffsetSmallExtensionY = -paperSideY/2 - coneZ + extensionY - 0.7;
+
+            endChamferOffsetY = extensionY > magicExtensionYLimit ? endChamferOffsetBigExtensionY : endChamferOffsetSmallExtensionY;
+            echo(str("endChamferOffsetY = ", endChamferOffsetY));
+
             hull()
             {
-                coneZ = 20;
-                // MAGIC!!!!!
-                //   vvvvv
-                cz = 1.104;
-                endChamferOffsetY = -paperSideY/2 - coneZ + endCleanceDia/2 + cz;
                 translate([0, endChamferOffsetY,    0]) rotate([-90,0,0]) cylinder(d1=coneZ*2, d2=0, h=coneZ);
                 translate([0, endChamferOffsetY, -100]) rotate([-90,0,0]) cylinder(d1=coneZ*2, d2=0, h=coneZ);
             }
@@ -177,7 +183,7 @@ module jig(angle, edgeClearance, throughSlot=false)
 	}
 }
 
-module roundedTop()
+module roundedTop(paperSideY, paperSideZ)
 {
 	d = paperSideZ + 6;
 
@@ -189,7 +195,7 @@ module roundedTop()
 	}
 }
 
-module paperSide()
+module paperSide(paperSideX, offSideY, offSideZ)
 {
 	hull()
 	{
@@ -198,7 +204,7 @@ module paperSide()
 	}
 }
 
-module paperSideExtension()
+module paperSideExtension(insideX, outsideX, offSideY, offSideZ)
 {
 	hull()
 	{
@@ -208,13 +214,15 @@ module paperSideExtension()
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([outsideX,dy,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([outsideX,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 
+        
+        paperSideExtensionIMiddleX = (outsideX + insideX)/2;
 		// MAGIC!!!!!
 		//   ---------------------------------------------------------------------------------------------vvv
 		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([paperSideExtensionIMiddleX, dy-1.3, 0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
 	}
 }
 
-module offSide()
+module offSide(offSideX, offSideY, offSideZ)
 {
 	hull()
 	{
@@ -235,19 +243,19 @@ if(developmentRender)
 {
     displayAngle = 90;
     
-	display() jig(angle=displayAngle, edgeClearance=1.5, throughSlot=true);
+	display() jig(angle=displayAngle, edgeClearance=1.5, throughSlot=true, extensionY=12);
 	displayGhost() paperGhost(angle=displayAngle);
 
-    display() translate([-45,0,0]) jig(angle=displayAngle, edgeClearance=1.5, throughSlot=false);
+    display() translate([-45,0,0]) jig(angle=displayAngle, edgeClearance=1.5, throughSlot=false, extensionY=4);
 
-	displayGhost() runnerGhost(width=3/8*mm, angle=displayAngle);
+	// displayGhost() runnerGhost(width=3/8*mm, angle=displayAngle);
 	// displayGhost() runnerGhost(width=1/4*mm, angle=displayAngle);
 	// displayGhost() runnerGhost(width=3/16*mm, angle=displayAngle);
 }
 else
 {
-	if(makeStrip) rotate([90,0,0]) jig(angle=90, edgeClearance=1.5, throughSlot=true);
-    if(makeSheet) rotate([90,0,0]) jig(angle=90, edgeClearance=1.5, throughSlot=false);
+	if(makeStrip) rotate([90,0,0]) jig(angle=90, edgeClearance=1.5, throughSlot=true, extensionY=12);
+    if(makeSheet) rotate([90,0,0]) jig(angle=90, edgeClearance=1.5, throughSlot=false, extensionY=4);
 }
 
 module runnerGhost(width, angle)
