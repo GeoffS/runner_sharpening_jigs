@@ -4,6 +4,9 @@ include <../OpenSCAD_Lib/chamferedCylinders.scad>
 firstLayerHeight = 0.2;
 layerHeight = 0.2;
 
+makeStrip = false;
+makeSheet = false;
+
 // Measured dimensions of a paper, in mm:
 // paperX = 82.6; // 3.25 * mm;
 // paperY = 50.1; //2.00 * mm;  
@@ -230,16 +233,21 @@ module clip(d=0)
 
 if(developmentRender)
 {
-	display() jig(angle=90, edgeClearance=1.5, throughSlot=true);
-	displayGhost() runnerGhost(width=3/8*mm, angle=90);
-	displayGhost() paperGhost(angle=90);
+    displayAngle = 90;
+    
+	display() jig(angle=displayAngle, edgeClearance=1.5, throughSlot=true);
+	displayGhost() paperGhost(angle=displayAngle);
 
-	// displayGhost() runnerGhost(width=1/4*mm, angle=90);
-	// displayGhost() runnerGhost(width=3/16*mm, angle=90);
+    display() translate([-45,0,0]) jig(angle=displayAngle, edgeClearance=1.5, throughSlot=false);
+
+	// displayGhost() runnerGhost(width=3/8*mm, angle=displayAngle);
+	// displayGhost() runnerGhost(width=1/4*mm, angle=displayAngle);
+	displayGhost() runnerGhost(width=3/16*mm, angle=displayAngle);
 }
 else
 {
-	rotate([90,0,0]) itemModule();
+	if(makeStrip) rotate([90,0,0]) jig(angle=90, edgeClearance=1.5, throughSlot=true);
+    if(makeSheet) rotate([90,0,0]) jig(angle=90, edgeClearance=1.5, throughSlot=false);
 }
 
 module runnerGhost(width, angle)
