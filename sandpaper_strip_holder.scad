@@ -20,7 +20,7 @@ sideX = paperX + 2*10;
 nutThThickness = 3;
 nutRecessX = 3;
 
-extensionY = 12;
+extensionY = 6;
 
 paperSideX = 20;
 paperSideY = paperY + 2*extensionY;
@@ -228,7 +228,7 @@ module clip(d=0)
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
     // tcu([-400, -200, -200], 400);
-	tcu([-200, -400+d, -200], 400);
+	// tcu([-200, -400+d, -200], 400);
 }
 
 if(developmentRender)
