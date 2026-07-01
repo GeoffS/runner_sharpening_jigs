@@ -26,7 +26,7 @@ paperSideX = 20;
 paperSideY = paperY + 2*extensionY;
 paperSideZ = paperZ + 8;
 
-offSideX = 20;
+offSideX = 12;
 offSideY = paperSideY;
 offSideZ = paperSideZ;
 
@@ -218,8 +218,8 @@ module offSide()
 {
 	hull()
 	{
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([0,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
-		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([-offSideX+offSideZ/2,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz = endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([0,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz=endCZ);
+		translate([0, offSideY/2, offSideZ/2]) rotate([90,0,0]) translate([-offSideX+offSideZ/2,0,0]) simpleChamferedCylinderDoubleEnded(d=offSideZ, h=offSideY, cz=endCZ);
 	}
 }
 
@@ -240,9 +240,9 @@ if(developmentRender)
 
     display() translate([-45,0,0]) jig(angle=displayAngle, edgeClearance=1.5, throughSlot=false);
 
-	// displayGhost() runnerGhost(width=3/8*mm, angle=displayAngle);
+	displayGhost() runnerGhost(width=3/8*mm, angle=displayAngle);
 	// displayGhost() runnerGhost(width=1/4*mm, angle=displayAngle);
-	displayGhost() runnerGhost(width=3/16*mm, angle=displayAngle);
+	// displayGhost() runnerGhost(width=3/16*mm, angle=displayAngle);
 }
 else
 {
