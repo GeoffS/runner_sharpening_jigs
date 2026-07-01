@@ -12,7 +12,7 @@ makeSheet = false;
 // paperY = 50.1; //2.00 * mm;  
 paperX = 50.1;
 paperY = 93;
-paperZ = 0.5;
+paperZ = 0.55;
 echo(str("Paper = ", paperX, " x ", paperY, " x ", paperZ));
 
 sideX = paperX + 2*10;
