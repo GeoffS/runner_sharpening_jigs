@@ -6,6 +6,7 @@ layerHeight = 0.2;
 
 makeStrip = false;
 makeSheet = false;
+makeGuide = false;
 
 // Measured dimensions of a paper, in mm:
 // paperX = 82.6; // 3.25 * mm;
@@ -233,22 +234,79 @@ module offSide(offSideX, offSideY, offSideZ)
 	}
 }
 
+cutStripX = 22;
+cornerDia = 6;
+cz = 1;
+jigX = cornerDia +cutStripX + 130  + cornerDia/2;
+jigY = cornerDia + paperY + 10 + cornerDia/2;
+jigZ = 4 + 2*cz;
+guideZ = jigZ + 4;
+slotX = 1;
+echo(str("jigY = ", jigY));
+echo(str("jigZ = ", jigZ));
+
+module paperCutGuide()
+{
+    ctrX = -(jigX - cornerDia/2)/2;
+    ctrY = -(jigY - cornerDia/2)/2;
+    echo(str("ctrX = ", ctrX));
+    echo(str("ctrY = ", ctrY));
+    
+    ctrX1 = ctrX + cutStripX;
+    ctrX2 = ctrX1 + cornerDia/2 + slotX + cornerDia/2;
+    echo(str("ctrX1 = ", ctrX1));
+    echo(str("ctrX2 = ", ctrX2));
+
+    difference()
+    {
+        union()
+        {
+            hull()
+            {
+                doubleX() doubleY() translate([ctrX, ctrY, 0]) simpleChamferedCylinderDoubleEnded(d=cornerDia, h=jigZ, cz=cz);
+            }
+            
+            hull()
+            {
+                translate([ctrX, ctrY, 0]) simpleChamferedCylinderDoubleEnded(d=cornerDia, h=guideZ, cz=cz);
+                translate([ctrX, -ctrY, 0]) simpleChamferedCylinderDoubleEnded(d=cornerDia, h=guideZ, cz=cz);
+            }
+            
+            
+            hull()
+            {
+                translate([ctrX, ctrY, 0]) simpleChamferedCylinderDoubleEnded(d=cornerDia, h=guideZ, cz=cz);
+                translate([ctrX1, ctrY, 0]) simpleChamferedCylinderDoubleEnded(d=cornerDia, h=guideZ, cz=cz);
+            }
+            hull()
+            {
+                translate([ctrX2,  ctrY, 0]) simpleChamferedCylinderDoubleEnded(d=cornerDia, h=guideZ, cz=cz);
+                translate([-ctrX, ctrY, 0]) simpleChamferedCylinderDoubleEnded(d=cornerDia, h=guideZ, cz=cz);
+            }
+        }
+
+        tcu([ctrX1+cornerDia/2-slotX/2, -150, jigZ-1.5], [slotX, 300, 100]);
+    }
+}
+
 module clip(d=0)
 {
 	// tc([-200, -400-d, -10], 400);
 	// tcu([0, -200, -200], 400);
     // tcu([-400, -200, -200], 400);
-	tcu([-200, -400+d, -200], 400);
+	// tcu([-200, -400+d, -200], 400);
 }
 
 if(developmentRender)
 {
-    displayAngle = 90;
-    
-	display() jig(angle=displayAngle, edgeClearance=1.5, throughSlot=true, extensionY=12);
-	displayGhost() paperGhost(angle=displayAngle);
+    display() translate([0,0,-6]) paperCutGuide();
 
-    display() translate([-45,0,0]) jig(angle=displayAngle, edgeClearance=1.5, throughSlot=false, extensionY=4);
+    // displayAngle = 90;
+    
+	// display() jig(angle=displayAngle, edgeClearance=1.5, throughSlot=true, extensionY=12);
+	// displayGhost() paperGhost(angle=displayAngle);
+
+    // display() translate([-45,0,0]) jig(angle=displayAngle, edgeClearance=1.5, throughSlot=false, extensionY=4);
 
 	// displayGhost() runnerGhost(width=3/8*mm, angle=displayAngle);
 	// displayGhost() runnerGhost(width=1/4*mm, angle=displayAngle);
@@ -258,6 +316,7 @@ else
 {
 	if(makeStrip) rotate([90,0,0]) jig(angle=90, edgeClearance=1.5, throughSlot=true, extensionY=12);
     if(makeSheet) rotate([90,0,0]) jig(angle=90, edgeClearance=1.5, throughSlot=false, extensionY=4);
+    if(makeGuide) paperCutGuide();
 }
 
 module runnerGhost(width, angle)
